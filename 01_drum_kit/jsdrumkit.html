@@ -56,9 +56,26 @@
 	<audio data-key="76" src="sounds/tink.wav"></audio>
 	
 <script>
-	window.addEventListener('keydown', function(e){
-		console.log(e);
-	});
-</script>
+	function playSound(e){
+		//querySelector() is just when you need a single return value
+		//audio[input] is an attribute selector, and it works just like its CSS counterpart.
+		const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+		const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+		if(!audio) return; //cut off function, don't bother wasting any more computation power on that
+		audio.currentTime = 0; //rewind the file to the start
+		audio.play();
+		console.log(key);
+		key.classList.toggle('playing');
+	}
+
+	function removeTransition(e) {
+		if(e.propertyName !== 'transform') return; //skip if it's not a transform
+		this.classList.remove('playing');
+	}
+	
+	const keys = document.querySelectorAll('.key');
+	keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+	window.addEventListener('keydown', playSound);
+	</script>
 </body>	
 </html>
